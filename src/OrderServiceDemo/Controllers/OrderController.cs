@@ -49,11 +49,14 @@ namespace OrderServiceDemo.Controllers
             }
         }
 
+        /**
+        * I went ahead and added this endpoint for convenience. I wanted to make
+        * sure that I was properly creating/modifying orders via the otehr endpoints
+        **/
         [HttpGet]
         [Route("v1/orders/{orderId:int}")]
         public async Task<Order> GetOrder(int orderId)
         {
-            //ToDo: surround with try catch and handle errors appropriately
             var order = await _orderService.GetOrder(orderId);
             var response = _mapper.Map<Order>(order);
             return response;

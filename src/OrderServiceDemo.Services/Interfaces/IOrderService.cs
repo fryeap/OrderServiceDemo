@@ -17,7 +17,8 @@ namespace OrderServiceDemo.Services.Interfaces
 
         /// <summary>
         /// Cancels the order supplied. Throws <see cref="Models.Exceptions.InvalidRequestException"/>
-        /// when an order id is upplied for an order that is already <see cref="Core.OrderStatus.Cancelled"/>
+        /// when an order id is supplied for an order that doesnt exist or
+        /// is already <see cref="Core.OrderStatus.Cancelled"/>
         /// </summary>
         /// <param name="orderId"></param>
         /// <returns>The cancelled Order</returns>

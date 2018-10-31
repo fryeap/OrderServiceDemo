@@ -47,7 +47,7 @@ namespace OrderServiceDemo.Services.Components
 
         public async Task<Order> CancelOrder(int orderId)
         {
-            //TODO: Add Unit tests for this service method.
+            //ensure the order exists before attempting to modify
             var order = await GetOrder(orderId);
             if (order == null) {
                 throw new InvalidRequestException("There is no order with that ID to be cancelled.");
@@ -55,9 +55,10 @@ namespace OrderServiceDemo.Services.Components
                 throw new InvalidRequestException("This order has already been cancelled.");
             }
 
+            //update order status to Cancelled
             order.OrderStatus = OrderStatus.Cancelled;
             //could streamline this by not waiting and immediately returning the order
-            // we send off to the repository service but that may be a bad idea givet
+            // we send off to the repository service but that may be a bad idea given
             // that something could go wrong with the update. There's a trade off
             // between speed/efficiency and trusting the response
             order = await _orderRepository.UpdateOrder(order);
@@ -66,11 +67,12 @@ namespace OrderServiceDemo.Services.Components
 
         public async Task<Order> DeleteOrder(int orderId)
         {
-            //TODO: Add Unit tests for this service method.
+            //ensure the order exists before attempting to delete
             var order = await GetOrder(orderId);
             if (order == null) {
                 throw new InvalidRequestException("No order found to delete.");
             }
+
             //delete line items first - then delete order
             var lineItems = await _orderLineItemRepository.DeleteAllLineItemsInOrder(orderId);
             order = await _orderRepository.DeleteOrder(order);
