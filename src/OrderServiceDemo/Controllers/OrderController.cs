@@ -51,7 +51,7 @@ namespace OrderServiceDemo.Controllers
 
         /**
         * I went ahead and added this endpoint for convenience. I wanted to make
-        * sure that I was properly creating/modifying orders via the otehr endpoints
+        * sure that I was properly creating/modifying orders via the other endpoints
         **/
         [HttpGet]
         [Route("v1/orders/{orderId:int}")]

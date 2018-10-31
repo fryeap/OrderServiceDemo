@@ -57,7 +57,7 @@ namespace OrderServiceDemo.Unit.Tests.Services
             //Assert
             //this test makes an assumption of data integrity. It would be better
             // to implement an equals method on the objects and do a deep check
-            // It suffice for now to ensure the order id's are identical
+            // It suffices for now to ensure the order id's are identical
             Assert.True(order.OrderId == returnedOrder.OrderId);
         }
 
