@@ -49,20 +49,47 @@ namespace OrderServiceDemo.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("v1/orders/{orderId:int}")]
+        public async Task<Order> GetOrder(int orderId)
+        {
+            //ToDo: surround with try catch and handle errors appropriately
+            var order = await _orderService.GetOrder(orderId);
+            var response = _mapper.Map<Order>(order);
+            return response;
+        }
+
         [HttpPost]
         [Route("v1/orders/{orderId:int}/cancel")]
-        public Task<Order> CancelOrder(int orderId)
+        public async Task<Order> CancelOrder(int orderId)
         {
-            //TODO: Add controller implementation.
-            return Task.FromException<Order>(BuildExceptionResponse(HttpStatusCode.NotImplemented, new NotImplementedException()));
+            try
+            {
+                var order = await _orderService.CancelOrder(orderId);
+                var response = _mapper.Map<Order>(order);
+                return response;
+            }
+            catch(InvalidRequestException ex)
+            {
+                throw BuildExceptionResponse(HttpStatusCode.BadRequest, ex);
+            }
+            
         }
 
         [HttpDelete]
         [Route("v1/orders/{orderId:int}")]
-        public Task<Order> DeleteOrder(int orderId)
+        public async Task<Order> DeleteOrder(int orderId)
         {
-            //TODO: Add controller implementation.
-            return Task.FromException<Order>(BuildExceptionResponse(HttpStatusCode.NotImplemented, new NotImplementedException()));
+            try
+            {
+                var order = await _orderService.DeleteOrder(orderId);
+                var response = _mapper.Map<Order>(order);
+                return response;
+            }
+            catch(InvalidRequestException ex)
+            {
+                throw BuildExceptionResponse(HttpStatusCode.BadRequest, ex);
+            }
         }
     }
 }

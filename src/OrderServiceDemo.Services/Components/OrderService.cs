@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using OrderServiceDemo.Core;
 using OrderServiceDemo.Models;
 using OrderServiceDemo.Models.Exceptions;
 using OrderServiceDemo.Services.Infrastructure;
@@ -44,18 +45,36 @@ namespace OrderServiceDemo.Services.Components
             return order;
         }
 
-        public Task<Order> CancelOrder(int orderId)
+        public async Task<Order> CancelOrder(int orderId)
         {
-            //TODO: Add service implementation. Throw exception if the indicated order does not exist or has already been cancelled.
             //TODO: Add Unit tests for this service method.
-            throw new System.NotImplementedException();
+            var order = await GetOrder(orderId);
+            if (order == null) {
+                throw new InvalidRequestException("There is no order with that ID to be cancelled.");
+            } else if (order.OrderStatus == OrderStatus.Cancelled) {
+                throw new InvalidRequestException("This order has already been cancelled.");
+            }
+
+            order.OrderStatus = OrderStatus.Cancelled;
+            //could streamline this by not waiting and immediately returning the order
+            // we send off to the repository service but that may be a bad idea givet
+            // that something could go wrong with the update. There's a trade off
+            // between speed/efficiency and trusting the response
+            order = await _orderRepository.UpdateOrder(order);
+            return order;
         }
 
-        public Task<Order> DeleteOrder(int orderId)
+        public async Task<Order> DeleteOrder(int orderId)
         {
-            //TODO: Add service implementation. Throw exception if the indicated order does not exist.
             //TODO: Add Unit tests for this service method.
-            throw new System.NotImplementedException();
+            var order = await GetOrder(orderId);
+            if (order == null) {
+                throw new InvalidRequestException("No order found to delete.");
+            }
+            //delete line items first - then delete order
+            var lineItems = await _orderLineItemRepository.DeleteAllLineItemsInOrder(orderId);
+            order = await _orderRepository.DeleteOrder(order);
+            return order;
         }
 
         private async Task<Order> BuildUpOrder(Order order)
