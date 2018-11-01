@@ -74,7 +74,7 @@ namespace OrderServiceDemo.Services.Components
             }
 
             //delete line items first - then delete order
-            var lineItems = await _orderLineItemRepository.DeleteAllLineItemsInOrder(orderId);
+            await _orderLineItemRepository.DeleteAllLineItemsInOrder(orderId);
             order = await _orderRepository.DeleteOrder(order);
             return order;
         }
